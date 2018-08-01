@@ -1,6 +1,7 @@
 package models;
 
 public class Listing {
+    String index;
     String productName;
     String brand;
     Float price;
@@ -14,7 +15,8 @@ public class Listing {
     String asin;
     String link;
 
-    public Listing(String productName, String brand, Float price, String category, Float rank, Float sales, Float revenue, Float reviews, Float rating, String seller, String asin, String link) {
+    public Listing(String index, String productName, String brand, Float price, String category, Float rank, Float sales, Float revenue, Float reviews, Float rating, String seller, String asin, String link) {
+        this.index = index;
         this.productName = productName;
         this.brand = brand;
         this.price = price;
@@ -27,6 +29,14 @@ public class Listing {
         this.seller = seller;
         this.asin = asin;
         this.link = link;
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
     }
 
     public String getProductName() {

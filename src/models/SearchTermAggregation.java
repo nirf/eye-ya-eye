@@ -9,6 +9,9 @@ public class SearchTermAggregation {
     Float averagePrice;
     Float averageReviews;
 
+    public SearchTermAggregation() {
+    }
+
     public SearchTermAggregation(String exportDate, String exportTime, String searchTerm, Float averageSales, Float averageSalesRank, Float averagePrice, Float averageReviews) {
         this.exportDate = exportDate;
         this.exportTime = exportTime;
@@ -73,5 +76,18 @@ public class SearchTermAggregation {
 
     public void setAverageReviews(Float averageReviews) {
         this.averageReviews = averageReviews;
+    }
+
+    @Override
+    public String toString() {
+        return "SearchTermAggregation{" +
+                "exportDate='" + exportDate + '\'' +
+                ", exportTime='" + exportTime + '\'' +
+                ", searchTerm='" + searchTerm + '\'' +
+                ", averageSales=" + averageSales +
+                ", averageSalesRank=" + averageSalesRank +
+                ", averagePrice=" + averagePrice +
+                ", averageReviews=" + averageReviews +
+                '}';
     }
 }
