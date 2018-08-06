@@ -1,45 +1,33 @@
 package utils.files;
 
-import models.SearchTermAggregation;
+import models.*;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.javatuples.Pair;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class CommaSeparatedValuesFilesUtils {
-    public static List<List<String>> getMatrix(String csvFile) {
-        BufferedReader br = null;
-        String line = "";
-        String cvsSplitBy = ",";
-        List<List<String>> matrix = new ArrayList<>();
-        try {
-            br = new BufferedReader(new FileReader(csvFile));
-            while ((line = br.readLine()) != null) {
-                // use comma as separator
-                String[] splittedLine = line.split(cvsSplitBy);
-                List<String> list = Arrays.asList(splittedLine);
-                matrix.add(list);
-            }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return matrix;
+
+    public static Pair<SearchTermAggregation, Listings> parseSearchTermCSVFile(String filePath) {
+        Pair.with(1, 2);
+        return null;
     }
+
+    public static Pair<KeywordTermAggregation, Keywords> keywordScountCSVFile(String filePath) {
+        Pair.with(1, 2);
+        return null;
+    }
+
+    /// bla
 
     public static SearchTermAggregation parseSearchTermAggregation(List<List<String>> list) {
         SearchTermAggregation searchTermAggregation = new SearchTermAggregation();
@@ -62,4 +50,22 @@ public class CommaSeparatedValuesFilesUtils {
 
         return searchTermAggregation;
     }
+
+    public static void parseCsvFile(String fileName) throws IOException {
+
+        Iterable<CSVRecord> parser = CSVFormat.DEFAULT.parse(new FileReader(fileName));
+
+        Iterator<CSVRecord> iterator = parser.iterator();
+        int i = 0;
+        while (i++ < 8) {
+            if (iterator.hasNext()) {
+                iterator.next();
+            }
+        }
+
+        CSVRecord csvRecord = iterator.next();
+        System.out.println(csvRecord.getRecordNumber());
+        System.out.println(csvRecord.get(0));
+    }
 }
+

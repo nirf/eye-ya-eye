@@ -15,6 +15,9 @@ public class Listing {
     String asin;
     String link;
 
+    public Listing() {
+    }
+
     public Listing(String index, String productName, String brand, Float price, String category, Float rank, Float sales, Float revenue, Float reviews, Float rating, String seller, String asin, String link) {
         this.index = index;
         this.productName = productName;
