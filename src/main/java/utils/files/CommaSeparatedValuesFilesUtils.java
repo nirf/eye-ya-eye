@@ -1,25 +1,92 @@
 package utils.files;
 
-import models.*;
+import models.KeywordTermAggregation;
+import models.Keywords;
+import models.Listings;
+import models.SearchTermAggregation;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.javatuples.Pair;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
 public class CommaSeparatedValuesFilesUtils {
 
 
-    public static Pair<SearchTermAggregation, Listings> parseSearchTermCSVFile(String filePath) {
-        Pair.with(1, 2);
-        return null;
+    public static Pair<SearchTermAggregation, Listings> parseSearchTermCSVFile(String filePath) throws IOException {
+        Iterable<CSVRecord> parser = CSVFormat.DEFAULT.parse(new FileReader(filePath));
+
+        Iterator<CSVRecord> iterator = parser.iterator();
+        int i = 0;
+        SearchTermAggregation searchTermAggregation = new SearchTermAggregation();
+
+        while (iterator.hasNext() && i++ < 7) {
+            CSVRecord csvRecord = iterator.next();
+
+            String content = csvRecord.get(0);
+
+            System.out.println(csvRecord.getRecordNumber());
+            System.out.println(csvRecord.get(0));
+
+            if (content.startsWith("Export date")) {
+                searchTermAggregation.setExportDate(content.replace("|", ",")
+                        .split(",")[0]
+                        .replace("Export date: ", "")
+                        .trim()
+                        .replace("\"", ""));
+
+                searchTermAggregation.setExportTime(content.replace("|", ",")
+                        .split(",")[1]
+                        .replace("Export time: ", "")
+                        .trim()
+                        .replace("\"", ""));
+            }
+
+            if (content.startsWith("Search Term")) {
+                searchTermAggregation.setSearchTerm(content
+                        .substring(content
+                                .indexOf(":") + 1)
+                        .trim()
+                        .replace("\"", ""));
+            }
+
+            if (content.startsWith("Average Sales:")) {
+                searchTermAggregation.setAverageSales(Float.valueOf(content
+                        .substring(content
+                                .indexOf(":") + 1, content.length() - 1)
+                        .trim()
+                        .replace("\"", "")));
+            }
+
+            if (content.startsWith("Average Sales Rank:")) {
+                String averageSalesRank = new StringBuilder(content
+                        .substring(content
+                                .indexOf(":") + 1, content.length())
+                        .trim()
+                        .replace("\"", ""))
+                        .append(content.trim()
+                                .replace("\"", ""))
+                        .toString();
+
+                searchTermAggregation.setAverageSalesRank(Float.valueOf(averageSalesRank));
+            }
+
+            if (content.startsWith("Average Price")) {
+                searchTermAggregation.setAveragePrice(Float.valueOf(content
+                        .substring(content.indexOf("$") + 1, content.length() - 1)
+                        .trim().replace("\"", "")));
+            }
+
+            if (content.startsWith("Average Reviews")) {
+                searchTermAggregation.setAverageReviews(Float.valueOf(content
+                        .substring(content.indexOf(":") + 1, content.length() - 1)
+                        .trim().replace("\"", "")));
+            }
+        }
+        return Pair.with(searchTermAggregation, null);
     }
 
     public static Pair<KeywordTermAggregation, Keywords> keywordScountCSVFile(String filePath) {
