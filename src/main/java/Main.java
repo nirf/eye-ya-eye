@@ -11,8 +11,8 @@ import java.text.ParseException;
 public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {
-        String keywordScountFilePath = "/Users/nir/Downloads/Jungle Scout Keyword Scout teepee tent for kids.csv";
-        String searchTermFilePath = "/Users/nir/Downloads/Search Term of teepee tent for kids.csv";
+        String keywordScountFilePath = "/Users/nir/Downloads/jungleScout/Jungle Scout Keyword Scout teepee tent for kids.csv";
+        String searchTermFilePath = "/Users/nir/Downloads/jungleScout/Search Term of teepee tent for kids.csv";
 
         Pair<SearchTermAggregation, Listings> pair = CommaSeparatedValuesFilesUtils.parseSearchTermCSVFile(searchTermFilePath);
         Pair<KeywordTermAggregation, Keywords> pair1 = CommaSeparatedValuesFilesUtils.keywordScountCSVFile(keywordScountFilePath);
