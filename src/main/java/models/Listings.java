@@ -19,4 +19,11 @@ public class Listings {
     public void setListings(List<Listing> listings) {
         this.listings = listings;
     }
+
+    @Override
+    public String toString() {
+        return "Listings{" +
+                "listings=" + listings +
+                '}';
+    }
 }

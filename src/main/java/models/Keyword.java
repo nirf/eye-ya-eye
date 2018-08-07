@@ -11,6 +11,9 @@ public class Keyword {
     Float broadPPCBid;
     Float relevancyScore;
 
+    public Keyword() {
+    }
+
     public Keyword(String keyword, Float exactMatchSearchVolume, Float broadMatchSearchVolume, String dominantCategory, Float recommendedGiveaway, Float HSABid, Float exactPPCBid, Float broadPPCBid, Float relevancyScore) {
         this.keyword = keyword;
         this.exactMatchSearchVolume = exactMatchSearchVolume;
@@ -93,5 +96,20 @@ public class Keyword {
 
     public void setRelevancyScore(Float relevancyScore) {
         this.relevancyScore = relevancyScore;
+    }
+
+    @Override
+    public String toString() {
+        return "Keyword{" +
+                "keyword='" + keyword + '\'' +
+                ", exactMatchSearchVolume=" + exactMatchSearchVolume +
+                ", broadMatchSearchVolume=" + broadMatchSearchVolume +
+                ", dominantCategory='" + dominantCategory + '\'' +
+                ", recommendedGiveaway=" + recommendedGiveaway +
+                ", HSABid=" + HSABid +
+                ", exactPPCBid=" + exactPPCBid +
+                ", broadPPCBid=" + broadPPCBid +
+                ", relevancyScore=" + relevancyScore +
+                '}';
     }
 }

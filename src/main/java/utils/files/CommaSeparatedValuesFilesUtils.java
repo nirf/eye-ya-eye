@@ -1,35 +1,168 @@
 package utils.files;
 
-import models.KeywordTermAggregation;
-import models.Keywords;
-import models.Listings;
-import models.SearchTermAggregation;
+import models.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.javatuples.Pair;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class CommaSeparatedValuesFilesUtils {
 
+    private final static Locale locale = Locale.US;
+    private final static Integer ERROR_PARSE_NUMBER = -1;
 
-    public static Pair<SearchTermAggregation, Listings> parseSearchTermCSVFile(String filePath) throws IOException {
+
+    public static Pair<SearchTermAggregation, Listings> parseSearchTermCSVFile(String filePath) throws IOException, ParseException {
         Iterable<CSVRecord> parser = CSVFormat.DEFAULT.parse(new FileReader(filePath));
-
         Iterator<CSVRecord> iterator = parser.iterator();
+
+        SearchTermAggregation searchTermAggregation = parseSearchTermAggregation(iterator);
+        // skip the headers
+        iterator.next();
+
+        List<Listing> listingList = parseListings(iterator);
+
+        return Pair.with(searchTermAggregation, new Listings(listingList));
+    }
+
+    public static Pair<KeywordTermAggregation, Keywords> keywordScountCSVFile(String filePath) throws IOException {
+        Iterable<CSVRecord> parser = CSVFormat.DEFAULT.parse(new FileReader(filePath));
+        Iterator<CSVRecord> iterator = parser.iterator();
+
+        KeywordTermAggregation keywordTermAggregation = parseKeywordTermAggregation(iterator);
+        // skip the headers
+        iterator.next();
+
+        List<Keyword> keywordList = parseKeywords(iterator);
+
+
+        return Pair.with(keywordTermAggregation, new Keywords(keywordList));
+    }
+
+    private static List<Keyword> parseKeywords(Iterator<CSVRecord> iterator) {
+        List<Keyword> keywordList = new ArrayList<>();
+        while (iterator.hasNext()) {
+            Keyword keyword = new Keyword();
+            CSVRecord csvRecord = iterator.next();
+
+            String keywordStr = csvRecord.get(0);
+            keyword.setKeyword(keywordStr);
+
+            String exactMatchSearchVolume = csvRecord.get(1);
+            keyword.setExactMatchSearchVolume(parseNumber(exactMatchSearchVolume).floatValue());
+
+            String broadMatchSearchVolume = csvRecord.get(2);
+            keyword.setBroadMatchSearchVolume(parseNumber(broadMatchSearchVolume).floatValue());
+
+            String dominanatCategory = csvRecord.get(3);
+            keyword.setDominantCategory(dominanatCategory);
+
+            String recommendedGiveaway = csvRecord.get(4);
+            keyword.setRecommendedGiveaway(parseNumber(recommendedGiveaway).floatValue());
+
+            String hsaBid = csvRecord.get(5);
+            keyword.setHSABid(parseNumberWithDollarSign(hsaBid).floatValue());
+
+            String exactPPCBid = csvRecord.get(6);
+            keyword.setExactPPCBid(parseNumberWithDollarSign(exactPPCBid).floatValue());
+
+            String broadPPCBid = csvRecord.get(7);
+            keyword.setBroadPPCBid(parseNumberWithDollarSign(broadPPCBid).floatValue());
+
+            String relevancyScope = csvRecord.get(8);
+            keyword.setRelevancyScore(parseNumber(relevancyScope).floatValue());
+
+            keywordList.add(keyword);
+        }
+
+        return keywordList;
+    }
+
+    private static KeywordTermAggregation parseKeywordTermAggregation(Iterator<CSVRecord> iterator) {
+        int i = 0;
+        KeywordTermAggregation keywordTermAggregation = new KeywordTermAggregation();
+        while (iterator.hasNext() && i++ < 3) {
+            CSVRecord csvRecord = iterator.next();
+            String content = csvRecord.get(0);
+
+            if (content.startsWith("Report Generated")) {
+                keywordTermAggregation.setReportGeneratedAt(content.substring(content.indexOf(":") + 1).trim());
+            }
+
+            if (content.startsWith("Search Term")) {
+                keywordTermAggregation.setSearchTerm(content.substring(content.indexOf(":") + 1).trim());
+            }
+        }
+        return keywordTermAggregation;
+    }
+
+    private static List<Listing> parseListings(Iterator<CSVRecord> iterator) throws ParseException {
+        // parsing the listings
+        List<Listing> listingList = new ArrayList<>();
+        while (iterator.hasNext()) {
+            Listing listing = new Listing();
+
+            CSVRecord csvRecord = iterator.next();
+
+            String index = csvRecord.get(0);
+            listing.setIndex(index);
+
+            String productName = csvRecord.get(1);
+            listing.setProductName(productName);
+
+            String brand = csvRecord.get(2);
+            listing.setBrand(brand);
+
+            String price = csvRecord.get(3);
+            listing.setPrice(parseNumberWithDollarSign(price).floatValue());
+
+            String category = csvRecord.get(4);
+            listing.setCategory(category);
+
+            String rank = csvRecord.get(5);
+            listing.setRank(parseNumber(rank.replace(",", "")).floatValue());
+
+            String sales = csvRecord.get(6);
+            listing.setSales(parseNumber(sales).floatValue());
+
+            String revenue = csvRecord.get(7);
+            listing.setRevenue(parseNumberWithDollarSign(revenue).floatValue());
+
+            String reviews = csvRecord.get(8);
+            listing.setReviews(parseNumber(reviews).floatValue());
+
+            String rating = csvRecord.get(9);
+            listing.setRating(parseNumber(rating).floatValue());
+
+            String seller = csvRecord.get(10);
+            listing.setSeller(seller);
+
+            String asin = csvRecord.get(11);
+            listing.setAsin(asin);
+
+            String link = csvRecord.get(12);
+            listing.setLink(link);
+            listingList.add(listing);
+        }
+        return listingList;
+    }
+
+    private static SearchTermAggregation parseSearchTermAggregation(Iterator<CSVRecord> iterator) throws ParseException {
         int i = 0;
         SearchTermAggregation searchTermAggregation = new SearchTermAggregation();
-
+        // parsing searchTermAggregation
         while (iterator.hasNext() && i++ < 7) {
             CSVRecord csvRecord = iterator.next();
 
             String content = csvRecord.get(0);
-
-            System.out.println(csvRecord.getRecordNumber());
-            System.out.println(csvRecord.get(0));
 
             if (content.startsWith("Export date")) {
                 searchTermAggregation.setExportDate(content.replace("|", ",")
@@ -54,85 +187,50 @@ public class CommaSeparatedValuesFilesUtils {
             }
 
             if (content.startsWith("Average Sales:")) {
-                searchTermAggregation.setAverageSales(Float.valueOf(content
-                        .substring(content
-                                .indexOf(":") + 1, content.length() - 1)
-                        .trim()
-                        .replace("\"", "")));
-            }
-
-            if (content.startsWith("Average Sales Rank:")) {
-                String averageSalesRank = new StringBuilder(content
+                searchTermAggregation.setAverageSales(parseNumber(content
                         .substring(content
                                 .indexOf(":") + 1, content.length())
                         .trim()
-                        .replace("\"", ""))
-                        .append(content.trim()
-                                .replace("\"", ""))
-                        .toString();
+                        .replace("\"", "")).floatValue());
+            }
 
-                searchTermAggregation.setAverageSalesRank(Float.valueOf(averageSalesRank));
+            if (content.startsWith("Average Sales Rank:")) {
+                String averageSalesRank = content.substring(content.indexOf(":") + 1, content.length())
+                        .replace(",", "").trim();
+                searchTermAggregation.setAverageSalesRank(parseNumber(averageSalesRank).floatValue());
             }
 
             if (content.startsWith("Average Price")) {
-                searchTermAggregation.setAveragePrice(Float.valueOf(content
-                        .substring(content.indexOf("$") + 1, content.length() - 1)
-                        .trim().replace("\"", "")));
+                searchTermAggregation.setAveragePrice(parseNumberWithDollarSign(content
+                        .substring(content.indexOf(":") + 1, content.length())
+                        .trim().replace("\"", "")).floatValue());
             }
 
             if (content.startsWith("Average Reviews")) {
-                searchTermAggregation.setAverageReviews(Float.valueOf(content
-                        .substring(content.indexOf(":") + 1, content.length() - 1)
-                        .trim().replace("\"", "")));
+                searchTermAggregation.setAverageReviews(parseNumber(content
+                        .substring(content.indexOf(":") + 1, content.length())
+                        .trim().replace("\"", "")).floatValue());
             }
         }
-        return Pair.with(searchTermAggregation, null);
-    }
-
-    public static Pair<KeywordTermAggregation, Keywords> keywordScountCSVFile(String filePath) {
-        Pair.with(1, 2);
-        return null;
-    }
-
-    /// bla
-
-    public static SearchTermAggregation parseSearchTermAggregation(List<List<String>> list) {
-        SearchTermAggregation searchTermAggregation = new SearchTermAggregation();
-        searchTermAggregation.setExportDate(list.get(0).get(0).replace("|", ",").split(",")[0].replace("Export date: ", "").trim().replace("\"", ""));
-        searchTermAggregation.setExportTime(list.get(0).get(0).replace("|", ",").split(",")[1].replace("Export time: ", "").trim().replace("\"", ""));
-
-        searchTermAggregation.setSearchTerm(list.get(1).get(0).substring(list.get(1).get(0).indexOf(":") + 1).trim().replace("\"", ""));
-
-        searchTermAggregation.setAverageSales(Float.valueOf(list.get(2).get(0).substring(list.get(2).get(0).indexOf(":") + 1, list.get(2).get(0).length() - 1).trim().replace("\"", "")));
-
-        String averageSalesRank = new StringBuilder(list.get(3).get(0).substring(list.get(3).get(0).indexOf(":") + 1, list.get(3).get(0).length()).trim().replace("\"", ""))
-                .append(list.get(3).get(1).trim().replace("\"", ""))
-                .toString();
-
-        searchTermAggregation.setAverageSalesRank(Float.valueOf(averageSalesRank));
-
-        searchTermAggregation.setAveragePrice(Float.valueOf(list.get(4).get(0).substring(list.get(4).get(0).indexOf("$") + 1, list.get(4).get(0).length() - 1).trim().replace("\"", "")));
-
-        searchTermAggregation.setAverageReviews(Float.valueOf(list.get(5).get(0).substring(list.get(5).get(0).indexOf(":") + 1, list.get(5).get(0).length() - 1).trim().replace("\"", "")));
-
         return searchTermAggregation;
     }
 
-    public static void parseCsvFile(String fileName) throws IOException {
-
-        Iterable<CSVRecord> parser = CSVFormat.DEFAULT.parse(new FileReader(fileName));
-
-        Iterator<CSVRecord> iterator = parser.iterator();
-        int i = 0;
-        while (i++ < 8) {
-            if (iterator.hasNext()) {
-                iterator.next();
-            }
+    private static Number parseNumber(String number) {
+        try {
+            // "265,858"
+            return NumberFormat.getNumberInstance(locale).parse(number);
+        } catch (Exception e) {
+            return ERROR_PARSE_NUMBER;
         }
+    }
 
-        CSVRecord csvRecord = iterator.next();
-        System.out.println(csvRecord.getRecordNumber());
-        System.out.println(csvRecord.get(0));
+    private static Number parseNumberWithDollarSign(String number) {
+        try {
+            // "$123,333.45"
+            return NumberFormat.getCurrencyInstance(locale).parse(number);
+        } catch (Exception e) {
+            return ERROR_PARSE_NUMBER;
+        }
     }
 }
 

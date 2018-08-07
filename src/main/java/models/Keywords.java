@@ -19,5 +19,12 @@ public class Keywords {
     public void setKewords(List<Keyword> kewords) {
         this.kewords = kewords;
     }
+
+    @Override
+    public String toString() {
+        return "Keywords{" +
+                "kewords=" + kewords +
+                '}';
+    }
 }
 

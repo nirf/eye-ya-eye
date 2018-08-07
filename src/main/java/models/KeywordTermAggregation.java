@@ -27,4 +27,12 @@ public class KeywordTermAggregation {
     public void setSearchTerm(String searchTerm) {
         this.searchTerm = searchTerm;
     }
+
+    @Override
+    public String toString() {
+        return "KeywordTermAggregation{" +
+                "reportGeneratedAt='" + reportGeneratedAt + '\'' +
+                ", searchTerm='" + searchTerm + '\'' +
+                '}';
+    }
 }

@@ -137,4 +137,23 @@ public class Listing {
     public void setLink(String link) {
         this.link = link;
     }
+
+    @Override
+    public String toString() {
+        return "Listing{" +
+                "index='" + index + '\'' +
+                ", productName='" + productName + '\'' +
+                ", brand='" + brand + '\'' +
+                ", price=" + price +
+                ", category='" + category + '\'' +
+                ", rank=" + rank +
+                ", sales=" + sales +
+                ", revenue=" + revenue +
+                ", reviews=" + reviews +
+                ", rating=" + rating +
+                ", seller='" + seller + '\'' +
+                ", asin='" + asin + '\'' +
+                ", link='" + link + '\'' +
+                '}';
+    }
 }
