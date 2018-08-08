@@ -65,7 +65,7 @@ public class CommaSeparatedValuesFilesUtils {
     }
 
 
-    public static Pair<SearchTermAggregation, Listings> parseSearchTermCSVFile(String filePath) throws IOException, ParseException {
+    public static SearchTermData parseSearchTermCSVFile(String filePath) throws IOException, ParseException {
         Iterable<CSVRecord> parser = CSVFormat.DEFAULT.parse(new FileReader(filePath));
         Iterator<CSVRecord> iterator = parser.iterator();
 
@@ -75,10 +75,10 @@ public class CommaSeparatedValuesFilesUtils {
 
         List<Listing> listingList = parseListings(iterator);
 
-        return Pair.with(searchTermAggregation, new Listings(listingList));
+        return new SearchTermData(searchTermAggregation, new Listings(listingList));
     }
 
-    public static Pair<KeywordTermAggregation, Keywords> keywordScountCSVFile(String filePath) throws IOException {
+    public static KeywordTermData keywordScountCSVFile(String filePath) throws IOException {
         Iterable<CSVRecord> parser = CSVFormat.DEFAULT.parse(new FileReader(filePath));
         Iterator<CSVRecord> iterator = parser.iterator();
 
@@ -89,7 +89,7 @@ public class CommaSeparatedValuesFilesUtils {
         List<Keyword> keywordList = parseKeywords(iterator);
 
 
-        return Pair.with(keywordTermAggregation, new Keywords(keywordList));
+        return new KeywordTermData(keywordTermAggregation, new Keywords(keywordList));
     }
 
     private static List<Keyword> parseKeywords(Iterator<CSVRecord> iterator) {
