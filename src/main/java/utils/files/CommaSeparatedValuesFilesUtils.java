@@ -5,19 +5,64 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.javatuples.Pair;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class CommaSeparatedValuesFilesUtils {
 
     private final static Locale locale = Locale.US;
     private final static Integer ERROR_PARSE_NUMBER = -1;
+
+    private final static String SEARCH_TERM_FILE_PREFIX = "search term of";
+    private final static String KEYWORD_FILE_PREFIX = "jungle scout keyword scout";
+
+    public static TermGroups scanDirAndGroupByTerm(String dirPath) {
+        File folder = new File(dirPath);
+        File[] listOfFiles = folder.listFiles();
+        List<TermGroup> termGroupList = new ArrayList<>();
+        Map<String, TermGroup> termToTermGroupMap = new HashMap<>();
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isDirectory()) {
+                continue;
+            }
+            String fileNameLowerCased = listOfFiles[i].getName().toLowerCase();
+            String fileName = listOfFiles[i].getAbsolutePath();
+            String term = "";
+            if (fileNameLowerCased.startsWith(SEARCH_TERM_FILE_PREFIX)) {
+                term = fileNameLowerCased.replace(SEARCH_TERM_FILE_PREFIX, "").replace(".csv", "").trim();
+
+                if (termToTermGroupMap.containsKey(term)) {
+                    TermGroup termGroup = termToTermGroupMap.get(term);
+                    termGroup.setSearchTermFilePath(fileName);
+                } else {
+                    TermGroup termGroup = new TermGroup();
+                    termGroup.setSearchTermFilePath(fileName);
+                    termGroup.setTerm(term);
+                    termToTermGroupMap.put(term, termGroup);
+                }
+            }
+
+            if (fileNameLowerCased.startsWith(KEYWORD_FILE_PREFIX)) {
+                term = fileNameLowerCased.replace(KEYWORD_FILE_PREFIX, "").replace(".csv", "").trim();
+
+                if (termToTermGroupMap.containsKey(term)) {
+                    TermGroup termGroup = termToTermGroupMap.get(term);
+                    termGroup.setKeywordScountFilePath(fileName);
+                } else {
+                    TermGroup termGroup = new TermGroup();
+                    termGroup.setKeywordScountFilePath(fileName);
+                    termToTermGroupMap.put(term, termGroup);
+                    termGroup.setTerm(term);
+                }
+            }
+        }
+
+        return new TermGroups(new ArrayList<>(termToTermGroupMap.values()));
+    }
 
 
     public static Pair<SearchTermAggregation, Listings> parseSearchTermCSVFile(String filePath) throws IOException, ParseException {

@@ -1,7 +1,4 @@
-import models.KeywordTermAggregation;
-import models.Keywords;
-import models.Listings;
-import models.SearchTermAggregation;
+import models.*;
 import org.javatuples.Pair;
 import utils.files.CommaSeparatedValuesFilesUtils;
 
@@ -11,11 +8,15 @@ import java.text.ParseException;
 public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {
-        String keywordScountFilePath = "/Users/nir/Downloads/jungleScout/Jungle Scout Keyword Scout teepee tent for kids.csv";
-        String searchTermFilePath = "/Users/nir/Downloads/jungleScout/Search Term of teepee tent for kids.csv";
+        TermGroups termGroups = CommaSeparatedValuesFilesUtils.scanDirAndGroupByTerm("/Users/nir/Downloads/jungleScout");
 
-        Pair<SearchTermAggregation, Listings> pair = CommaSeparatedValuesFilesUtils.parseSearchTermCSVFile(searchTermFilePath);
-        Pair<KeywordTermAggregation, Keywords> pair1 = CommaSeparatedValuesFilesUtils.keywordScountCSVFile(keywordScountFilePath);
+        System.out.println(termGroups);
+
+        for (int i = 0; i < termGroups.getTermGroupList().size(); i++) {
+            TermGroup termGroup = termGroups.getTermGroupList().get(i);
+            Pair<SearchTermAggregation, Listings> pair = CommaSeparatedValuesFilesUtils.parseSearchTermCSVFile(termGroup.getSearchTermFilePath());
+            Pair<KeywordTermAggregation, Keywords> pair1 = CommaSeparatedValuesFilesUtils.keywordScountCSVFile(termGroup.getKeywordScountFilePath());
+        }
 
         // finished parsing now lets play
 
