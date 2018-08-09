@@ -3,13 +3,17 @@ package models;
 public class KeywordTermAggregation {
     String reportGeneratedAt;
     String searchTerm;
+    Float exactMatchSearchVolume;
 
     public KeywordTermAggregation() {
     }
 
-    public KeywordTermAggregation(String reportGeneratedAt, String searchTerm) {
-        this.reportGeneratedAt = reportGeneratedAt;
-        this.searchTerm = searchTerm;
+    public Float getExactMatchSearchVolume() {
+        return exactMatchSearchVolume;
+    }
+
+    public void setExactMatchSearchVolume(Float exactMatchSearchVolume) {
+        this.exactMatchSearchVolume = exactMatchSearchVolume;
     }
 
     public String getReportGeneratedAt() {
@@ -33,6 +37,7 @@ public class KeywordTermAggregation {
         return "KeywordTermAggregation{" +
                 "reportGeneratedAt='" + reportGeneratedAt + '\'' +
                 ", searchTerm='" + searchTerm + '\'' +
+                ", exactMatchSearchVolume='" + exactMatchSearchVolume + '\'' +
                 '}';
     }
 }
