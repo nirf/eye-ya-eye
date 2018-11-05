@@ -44,16 +44,16 @@ public class TermsData {
             termData.getSearchTermData().getSearchTermAggregation().setAverageRating(averageRating);
 
 
-            List<Keyword> keywordList = termData.getKeywordTermData().getKeywords().getKewords();
-            List<Keyword> keywordList1 = keywordList.stream()
-                    .filter(keyword -> keyword.getRelevancyScore() == 100)
-                    .collect(Collectors.toList());
-
-            if (keywordList1.size() > 0) {
-                termData.getKeywordTermData().getKeywordTermAggregation().setExactMatchSearchVolume(keywordList1.get(0).getExactMatchSearchVolume());
-            } else {
-                termData.getKeywordTermData().getKeywordTermAggregation().setExactMatchSearchVolume(-1f);
-            }
+//            List<Keyword> keywordList = termData.getKeywordTermData().getKeywords().getKewords();
+//            List<Keyword> keywordList1 = keywordList.stream()
+//                    .filter(keyword -> keyword.getRelevancyScore() == 100)
+//                    .collect(Collectors.toList());
+//
+//            if (keywordList1.size() > 0) {
+//                termData.getKeywordTermData().getKeywordTermAggregation().setExactMatchSearchVolume(keywordList1.get(0).getExactMatchSearchVolume());
+//            } else {
+//                termData.getKeywordTermData().getKeywordTermAggregation().setExactMatchSearchVolume(-1f);
+//            }
         }
     }
 

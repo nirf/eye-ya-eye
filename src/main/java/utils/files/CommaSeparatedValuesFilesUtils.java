@@ -79,6 +79,9 @@ public class CommaSeparatedValuesFilesUtils {
     }
 
     public static KeywordTermData keywordScountCSVFile(String filePath) throws IOException {
+        if (filePath == null) {
+            return null;
+        }
         Iterable<CSVRecord> parser = CSVFormat.DEFAULT.parse(new FileReader(filePath));
         Iterator<CSVRecord> iterator = parser.iterator();
 

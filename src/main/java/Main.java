@@ -11,7 +11,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {
-        TermGroups termGroups = CommaSeparatedValuesFilesUtils.scanDirAndGroupByTerm("/Users/nir/Downloads/jungleScout");
+        TermGroups termGroups = CommaSeparatedValuesFilesUtils.scanDirAndGroupByTerm("/Users/nir/Downloads/jungleScout_v1");
 
         List<TermData> termDataList = new ArrayList<>();
 
@@ -114,18 +114,18 @@ public class Main {
             System.out.println(termData.getSearchTermData().getSearchTermAggregation().getAverageRating());
         }
 
-        Collections.sort(termsData.getTermDataList(), new Comparator<TermData>() {
-            @Override
-            public int compare(TermData o1, TermData o2) {
-                return o1.getKeywordTermData().getKeywordTermAggregation().getExactMatchSearchVolume()
-                        .compareTo(o2.getKeywordTermData().getKeywordTermAggregation().getExactMatchSearchVolume());
-            }
-        });
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>");
-        System.out.println("Order by Exact match search volume");
-        for (TermData termData : termsData.getTermDataList()) {
-            System.out.println(termData.getKeywordTermData().getKeywordTermAggregation().getSearchTerm());
-            System.out.println(termData.getKeywordTermData().getKeywordTermAggregation().getExactMatchSearchVolume());
-        }
+//        Collections.sort(termsData.getTermDataList(), new Comparator<TermData>() {
+//            @Override
+//            public int compare(TermData o1, TermData o2) {
+//                return o1.getKeywordTermData().getKeywordTermAggregation().getExactMatchSearchVolume()
+//                        .compareTo(o2.getKeywordTermData().getKeywordTermAggregation().getExactMatchSearchVolume());
+//            }
+//        });
+//        System.out.println(">>>>>>>>>>>>>>>>>>>>>>");
+//        System.out.println("Order by Exact match search volume");
+//        for (TermData termData : termsData.getTermDataList()) {
+//            System.out.println(termData.getKeywordTermData().getKeywordTermAggregation().getSearchTerm());
+//            System.out.println(termData.getKeywordTermData().getKeywordTermAggregation().getExactMatchSearchVolume());
+//        }
     }
 }
